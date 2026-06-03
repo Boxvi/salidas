@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💘 ¿Saldrías Conmigo?</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rose: #ff6b8a;
+            --rose-light: #ffd6df;
+            --rose-pale: #fff0f3;
+            --lavender: #c084fc;
+            --lavender-light: #ede9fe;
+            --peach: #fb923c;
+            --peach-light: #fed7aa;
+            --mint: #34d399;
+            --mint-light: #d1fae5;
+            --cream: #fdf8f0;
+            --text: #3d1a2e;
+            --text-muted: #9d7490;
+            --white: #ffffff;
+            --shadow: 0 8px 32px rgba(255, 107, 138, 0.15);
+            --shadow-hover: 0 16px 48px rgba(255, 107, 138, 0.25);
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff0f3 0%, #fdf0ff 50%, #f0f4ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #root {
+            min-height: 100vh;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-10px) rotate(2deg);
+            }
+
+            66% {
+                transform: translateY(-5px) rotate(-2deg);
+            }
+        }
+
+        @keyframes pulse-heart {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-20px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-up {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes wiggle {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-10deg);
+            }
+
+            75% {
+                transform: rotate(10deg);
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(255, 107, 138, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(255, 107, 138, 0.6), 0 0 60px rgba(192, 132, 252, 0.3);
+            }
+        }
+
+        @keyframes star-spin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .floating-emoji {
+            position: fixed;
+            pointer-events: none;
+            font-size: 2rem;
+            animation: confetti-fall linear forwards;
+            z-index: 9999;
+        }
+
+        .screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            animation: slide-up 0.5s ease forwards;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--rose), var(--lavender), var(--peach));
+            animation: shimmer 2s infinite;
+            background-size: 200% auto;
+        }
+
+        .progress-bar {
+            background: #f3e8ff;
+            border-radius: 50px;
+            height: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 50px;
+            background: linear-gradient(90deg, var(--rose), var(--lavender));
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--rose), #ff4d79);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 107, 138, 0.4);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--rose);
+            border: 2px solid var(--rose-light);
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--rose-pale);
+            border-color: var(--rose);
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #34d399, #059669);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(52, 211, 153, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(52, 211, 153, 0.5);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: fixed;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+            z-index: 100;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid var(--rose-light);
+            border-radius: 16px;
+            padding: 14px 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .option-btn:hover {
+            border-color: var(--rose);
+            background: var(--rose-pale);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.selected {
+            border-color: var(--rose);
+            background: linear-gradient(135deg, var(--rose-pale), #fce7f3);
+            color: #c2185b;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(255, 107, 138, 0.2);
+        }
+
+        .option-btn .emoji {
+            font-size: 1.8rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--rose-light);
+            border-radius: 12px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            color: var(--text);
+            background: white;
+            outline: none;
+            transition: border-color 0.3s;
+            margin: 8px 0;
+        }
+
+        .input-field:focus {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 3px rgba(255, 107, 138, 0.15);
+        }
+
+        h1.cursive {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            color: var(--rose);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        h2.step-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--lavender-light), #fce7f3);
+            color: #7c3aed;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .compatibility-bar-wrap {
+            background: #f5f0ff;
+            border-radius: 50px;
+            height: 20px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .compatibility-fill {
+            height: 100%;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #f472b6, #a78bfa, #34d399);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--rose-light);
+            font-size: 0.95rem;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+            min-width: 100px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .summary-value {
+            color: var(--text);
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .checkbox-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--lavender-light);
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            cursor: pointer;
+        }
+
+        .checkbox-wrap input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--lavender);
+            cursor: pointer;
+        }
+
+        .final-card {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #fff0f3, #f5f0ff, #f0fff4);
+            border-radius: 24px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(192, 132, 252, 0.2);
+            animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .meme-bubble {
+            position: fixed;
+            background: white;
+            border-radius: 16px;
+            padding: 12px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            z-index: 999;
+            animation: bounce-in 0.3s ease forwards;
+            pointer-events: none;
+            white-space: nowrap;
+            border: 2px solid var(--rose-light);
+        }
+
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-heart {
+            position: absolute;
+            font-size: clamp(1rem, 3vw, 2.5rem);
+            opacity: 0.06;
+            animation: float linear infinite;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5rem;
+            }
+
+            h1.cursive {
+                font-size: 2rem;
+            }
+
+            .option-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            deleteDoc,
+            doc,
+            query,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBuUgTR_HPVs0vwASufWL86RKmRtWr4ZZI",
+            authDomain: "boxvi-date.firebaseapp.com",
+            projectId: "boxvi-date",
+            storageBucket: "boxvi-date.firebasestorage.app",
+            messagingSenderId: "95150728257",
+            appId: "1:95150728257:web:c4378e617f502cf561d2c0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        window.db = getFirestore(app);
+        window.firebaseHelpers = {
+            collection,
+            addDoc,
+            getDocs,
+            deleteDoc,
+            doc,
+            query,
+            orderBy
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        const MEMES = [
+            "😤 ¡No tan rápido!",
+            "🏃 ¡Más rápido que yo!",
+            "😏 ¿En serio lo intentaste?",
+            "🙅 Ese botón está de vacaciones",
+            "✋ Nope, no existe esa opción",
+            "🤡 Jaja, no",
+            "👀 ¿Qué intentas hacer?",
+            "🫣 Ese botón es decorativo",
+            "😂 Buen intento, amigo",
+        ];
+
+        const TOTAL_STEPS = 8;
+
+        function FloatingHearts() {
+            const hearts = ['💕', '💗', '💖', '💝', '✨', '🌸', '💫', '🌺'];
+            return (
+                <div className="hearts-bg">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                        <span
+                            key={i}
+                            className="bg-heart"
+                            style={{
+                                left: `${(i * 8.3) % 100}%`,
+                                top: `${(i * 11) % 80}%`,
+                                animationDuration: `${5 + (i % 4)}s`,
+                                animationDelay: `${i * 0.5}s`,
+                                fontSize: `${1.5 + (i % 3) * 0.8}rem`,
+                            }}
+                        >
+                            {hearts[i % hearts.length]}
+                        </span>
+                    ))}
+                </div>
+            );
+        }
+
+        function ConfettiPiece({ delay, x }) {
+            const emojis = ['🎊', '🎉', '💕', '✨', '🌸', '💖', '🎈', '⭐'];
+            return (
+                <span
+                    className="floating-emoji"
+                    style={{
+                        left: `${x}%`,
+                        top: '-30px',
+                        animationDuration: `${2 + Math.random() * 2}s`,
+                        animationDelay: `${delay}s`,
+                        fontSize: `${1.2 + Math.random()}rem`,
+                    }}
+                >
+                    {emojis[Math.floor(Math.random() * emojis.length)]}
+                </span>
+            );
+        }
+
+        function ProgressBar({ step }) {
+            const pct = Math.round((step / TOTAL_STEPS) * 100);
+            return (
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                        <span>💘 Protocolo de Compatibilidad</span>
+                        <span>{pct}%</span>
+                    </div>
+                    <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: INTRO
+        function ScreenIntro({ onStart }) {
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 480, width: '100%' }}>
+                        <div style={{ fontSize: '5rem', marginBottom: '1rem', animation: 'pulse-heart 1.5s ease-in-out infinite' }}>💘</div>
+                        <h1 className="cursive" style={{ marginBottom: '1rem' }}>¿Saldrías Conmigo?</h1>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                            ⚡ Se ha iniciado un protocolo especial
+                        </p>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '2.5rem' }}>
+                            de compatibilidad.
+                        </p>
+                        <button className="btn-primary" onClick={onStart} style={{ fontSize: '1.1rem', padding: '16px 48px' }}>
+                            🚀 Iniciar Protocolo
+                        </button>
+                        <p style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                            ✅ 100% científicamente comprobado · 🔒 Datos guardados con amor
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: STEP 1 — CONFIRMATION
+        function Step1({ onNext }) {
+            const [noPos, setNoPos] = useState({ x: 60, y: null });
+            const [meme, setMeme] = useState(null);
+            const [accepted, setAccepted] = useState(false);
+            const memeTimer = useRef(null);
+
+            const evadeNo = useCallback((e) => {
+                const newX = Math.random() * 70 + 5;
+                const newY = Math.random() * 60 + 10;
+                setNoPos({ x: newX, y: newY });
+                const msg = MEMES[Math.floor(Math.random() * MEMES.length)];
+                setMeme({ text: msg, x: e.clientX, y: e.clientY });
+                clearTimeout(memeTimer.current);
+                memeTimer.current = setTimeout(() => setMeme(null), 1500);
+            }, []);
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={1} />
+                            <div className="step-badge">📋 Paso 1 de 7 · Confirmación Inicial</div>
+                            <h2 className="step-title">¿Deseas tener una cita conmigo? 🥺</h2>
+                            <p className="subtitle">Tu respuesta es muy importante para continuar el protocolo...</p>
+
+                            {!accepted ? (
+                                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2rem' }}>
+                                    <button className="btn-yes" onClick={() => setAccepted(true)}>
+                                        ✅ Sí, claro que sí
+                                    </button>
+                                </div>
+                            ) : (
+                                <div style={{ animation: 'bounce-in 0.5s ease' }}>
+                                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🥳</div>
+                                    <p style={{ fontWeight: 700, color: '#059669', marginBottom: '1.5rem', fontSize: '1.05rem' }}>
+                                        ¡Sabía que dirías que sí! 💚
+                                    </p>
+                                    <button className="btn-primary" onClick={onNext}>
+                                        Continuar →
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Floating NO button */}
+                    <button
+                        className="btn-no"
+                        style={{
+                            left: `${noPos.x}%`,
+                            top: noPos.y ? `${noPos.y}%` : '75%',
+                        }}
+                        onMouseEnter={evadeNo}
+                        onClick={evadeNo}
+                    >
+                        ❌ No
+                    </button>
+
+                    {meme && (
+                        <div
+                            className="meme-bubble"
+                            style={{ left: Math.min(meme.x, window.innerWidth - 220), top: Math.max(meme.y - 60, 10) }}
+                        >
+                            {meme.text}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // SCREEN: STEP 2 — NAME
+        function Step2({ onNext }) {
+            const [name, setName] = useState('');
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={2} />
+                            <div className="step-badge">👤 Paso 2 de 7 · Identificación</div>
+                            <div style={{ fontSize: '3rem', marginBottom: '0.5rem', textAlign: 'center' }}>🌸</div>
+                            <h2 className="step-title" style={{ textAlign: 'center' }}>¿Cómo te llamas?</h2>
+                            <p className="subtitle" style={{ textAlign: 'center' }}>Necesito saber cómo llamarte en mis sueños 💭</p>
+
+                            <input
+                                className="input-field"
+                                type="text"
+                                placeholder="Tu nombre completo..."
+                                value={name}
+                                onChange={e => setName(e.target.value)}
+                                style={{ fontSize: '1.1rem', textAlign: 'center', marginTop: '1rem' }}
+                            />
+
+                            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => name.trim() && onNext({ nombre: name.trim() })}
+                                    disabled={!name.trim()}
+                                    style={{ opacity: name.trim() ? 1 : 0.5 }}
+                                >
+                                    Guardar y Continuar ✨
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: STEP 3 — DATE & TIME
+        function Step3({ onNext }) {
+            const [fecha, setFecha] = useState('');
+            const [hora, setHora] = useState('');
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={3} />
+                            <div className="step-badge">📅 Paso 3 de 7 · Disponibilidad</div>
+                            <div style={{ fontSize: '3rem', marginBottom: '0.5rem', textAlign: 'center' }}>🗓️</div>
+                            <h2 className="step-title" style={{ textAlign: 'center' }}>¿Cuándo estarías disponible?</h2>
+                            <p className="subtitle" style={{ textAlign: 'center' }}>Voy a bloquear esa fecha en mi calendario ❤️</p>
+
+                            <div style={{ display: 'grid', gap: '12px', marginTop: '1rem' }}>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>📅 Fecha</label>
+                                    <input className="input-field" type="date" value={fecha} onChange={e => setFecha(e.target.value)} />
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>🕐 Hora</label>
+                                    <input className="input-field" type="time" value={hora} onChange={e => setHora(e.target.value)} />
+                                </div>
+                            </div>
+
+                            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => fecha && hora && onNext({ fecha, hora })}
+                                    disabled={!fecha || !hora}
+                                    style={{ opacity: (fecha && hora) ? 1 : 0.5 }}
+                                >
+                                    📅 Confirmar Fecha
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: STEP 4 — MOVIES
+        function Step4({ onNext }) {
+            const [genero, setGenero] = useState('');
+            const [lugar, setLugar] = useState('');
+            const [sugerencia, setSugerencia] = useState('');
+
+            const generos = [
+                { emoji: '😂', label: 'Comedia' },
+                { emoji: '💥', label: 'Acción' },
+                { emoji: '👻', label: 'Terror' },
+                { emoji: '🚀', label: 'Ciencia Ficción' },
+                { emoji: '💕', label: 'Romance' },
+                { emoji: '⛩️', label: 'Anime' },
+            ];
+
+            const lugares = [
+                { emoji: '🏠', label: 'Tu casa' },
+                { emoji: '🏡', label: 'Mi casa' },
+                { emoji: '📍', label: 'Lugar neutral' },
+                { emoji: '🤷', label: 'Por decidir' },
+            ];
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={4} />
+                            <div className="step-badge">🎬 Paso 4 de 7 · Noche de Películas</div>
+                            <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', textAlign: 'center' }}>🎬</div>
+                            <h2 className="step-title" style={{ textAlign: 'center' }}>¿Qué género prefieres?</h2>
+                            <p className="subtitle" style={{ textAlign: 'center' }}>Prometo no spoilear el final 🙊</p>
+
+                            <div className="option-grid">
+                                {generos.map(g => (
+                                    <button key={g.label} className={`option-btn ${genero === g.label ? 'selected' : ''}`} onClick={() => setGenero(g.label)}>
+                                        <span className="emoji">{g.emoji}</span>
+                                        <span>{g.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            <h2 className="step-title" style={{ marginTop: '1.5rem' }}>¿Dónde vemos la película?</h2>
+                            <div className="option-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+                                {lugares.map(l => (
+                                    <button key={l.label} className={`option-btn ${lugar === l.label ? 'selected' : ''}`} onClick={() => setLugar(l.label)}>
+                                        <span className="emoji">{l.emoji}</span>
+                                        <span>{l.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div style={{ marginTop: '1rem' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>💬 ¿Alguna sugerencia?</label>
+                                <input className="input-field" type="text" placeholder="Película favorita, director, saga..." value={sugerencia} onChange={e => setSugerencia(e.target.value)} />
+                            </div>
+
+                            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => genero && lugar && onNext({ generoPelicula: genero, lugarPelicula: lugar, sugerencia })}
+                                    disabled={!genero || !lugar}
+                                    style={{ opacity: (genero && lugar) ? 1 : 0.5 }}
+                                >
+                                    Siguiente Parámetro 🎞️
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: STEP 5 — FIRST DATE
+        function Step5({ onNext }) {
+            const [plan, setPlan] = useState('');
+
+            const planes = [
+                { emoji: '☕', label: 'Café' },
+                { emoji: '🌌', label: 'Planetario' },
+                { emoji: '🎮', label: 'Arcade' },
+                { emoji: '📚', label: 'Librería' },
+                { emoji: '🎳', label: 'Bolos' },
+                { emoji: '🎨', label: 'Museo' },
+            ];
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={5} />
+                            <div className="step-badge">💫 Paso 5 de 7 · Primera Cita</div>
+                            <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', textAlign: 'center' }}>✨</div>
+                            <h2 className="step-title" style={{ textAlign: 'center' }}>¿Cuál sería tu plan ideal?</h2>
+                            <p className="subtitle" style={{ textAlign: 'center' }}>Elige el escenario perfecto 🗺️</p>
+
+                            <div className="option-grid">
+                                {planes.map(p => (
+                                    <button key={p.label} className={`option-btn ${plan === p.label ? 'selected' : ''}`} onClick={() => setPlan(p.label)}>
+                                        <span className="emoji">{p.emoji}</span>
+                                        <span>{p.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => plan && onNext({ planCita: plan })}
+                                    disabled={!plan}
+                                    style={{ opacity: plan ? 1 : 0.5 }}
+                                >
+                                    Continuar 🚀
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: STEP 6 — FOOD
+        function Step6({ onNext }) {
+            const [comida, setComida] = useState('');
+
+            const comidas = [
+                { emoji: '🍕', label: 'Pizza' },
+                { emoji: '🍣', label: 'Sushi' },
+                { emoji: '🍔', label: 'Hamburguesas' },
+                { emoji: '🌮', label: 'Tacos' },
+                { emoji: '🍝', label: 'Pasta' },
+                { emoji: '🍰', label: 'Postres' },
+            ];
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={6} />
+                            <div className="step-badge">🍽️ Paso 6 de 7 · Stack Gastronómico</div>
+                            <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', textAlign: 'center' }}>🍽️</div>
+                            <h2 className="step-title" style={{ textAlign: 'center' }}>¿Qué comida debería incluir nuestra cita?</h2>
+                            <p className="subtitle" style={{ textAlign: 'center' }}>¡El camino al corazón pasa por el estómago! 💕</p>
+
+                            <div className="option-grid">
+                                {comidas.map(c => (
+                                    <button key={c.label} className={`option-btn ${comida === c.label ? 'selected' : ''}`} onClick={() => setComida(c.label)}>
+                                        <span className="emoji">{c.emoji}</span>
+                                        <span>{c.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => comida && onNext({ comida })}
+                                    disabled={!comida}
+                                    style={{ opacity: comida ? 1 : 0.5 }}
+                                >
+                                    Casi Listo 🎉
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: STEP 7 — POST DATE
+        function Step7({ onNext }) {
+            const [actividad, setActividad] = useState('');
+
+            const actividades = [
+                { emoji: '🌃', label: 'Paseo nocturno' },
+                { emoji: '🎵', label: 'Crear playlist' },
+                { emoji: '🎲', label: 'Juegos de mesa' },
+                { emoji: '✨', label: 'Ver estrellas' },
+                { emoji: '📷', label: 'Tomar fotos' },
+                { emoji: '🍦', label: 'Ir por helado' },
+            ];
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={7} />
+                            <div className="step-badge">🌙 Paso 7 de 7 · Actividad Post-Cita</div>
+                            <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', textAlign: 'center' }}>🌙</div>
+                            <h2 className="step-title" style={{ textAlign: 'center' }}>¿Qué hacemos después?</h2>
+                            <p className="subtitle" style={{ textAlign: 'center' }}>La noche es larga y el tiempo vuela contigo 🌟</p>
+
+                            <div className="option-grid">
+                                {actividades.map(a => (
+                                    <button key={a.label} className={`option-btn ${actividad === a.label ? 'selected' : ''}`} onClick={() => setActividad(a.label)}>
+                                        <span className="emoji">{a.emoji}</span>
+                                        <span>{a.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => actividad && onNext({ actividadPosterior: actividad })}
+                                    disabled={!actividad}
+                                    style={{ opacity: actividad ? 1 : 0.5 }}
+                                >
+                                    Compilar Respuestas 🔬
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: SUMMARY
+        function ScreenSummary({ data, onNext }) {
+            const [compat, setCompat] = useState(0);
+            const [analysing, setAnalysing] = useState(true);
+
+            useEffect(() => {
+                const timer = setTimeout(() => {
+                    setCompat(90 + Math.floor(Math.random() * 11));
+                    setAnalysing(false);
+                }, 2000);
+                return () => clearTimeout(timer);
+            }, []);
+
+            const rows = [
+                { label: '👤 Nombre', value: data.nombre },
+                { label: '📅 Fecha', value: data.fecha },
+                { label: '⏰ Hora', value: data.hora },
+                { label: '🎬 Película', value: data.generoPelicula },
+                { label: '📍 Lugar', value: data.lugarPelicula },
+                { label: '✨ Plan', value: data.planCita },
+                { label: '🍽️ Comida', value: data.comida },
+                { label: '🌙 Después', value: data.actividadPosterior },
+            ];
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card">
+                            <ProgressBar step={8} />
+                            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🔬</div>
+                                <h2 style={{ fontFamily: 'Dancing Script, cursive', fontSize: '1.8rem', color: 'var(--rose)' }}>
+                                    Resumen de Compatibilidad
+                                </h2>
+                                <p className="subtitle" style={{ marginTop: '0.5rem' }}>
+                                    {analysing ? '⏳ Los algoritmos están analizando...' : '✅ ¡Análisis completado!'}
+                                </p>
+                            </div>
+
+                            {rows.map(r => r.value && (
+                                <div key={r.label} className="summary-row">
+                                    <span className="summary-label">{r.label}</span>
+                                    <span className="summary-value">{r.value}</span>
+                                </div>
+                            ))}
+
+                            <div style={{ marginTop: '1.5rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontWeight: 700, fontSize: '0.9rem' }}>
+                                    <span style={{ color: 'var(--text-muted)' }}>💕 Compatibilidad</span>
+                                    <span style={{ color: '#7c3aed' }}>{compat}%</span>
+                                </div>
+                                <div className="compatibility-bar-wrap">
+                                    <div className="compatibility-fill" style={{ width: analysing ? '0%' : `${compat}%` }}>
+                                        {!analysing && `${compat}%`}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {!analysing && (
+                                <div style={{ textAlign: 'center', marginTop: '1.5rem', animation: 'slide-up 0.5s ease' }}>
+                                    <div style={{ background: 'linear-gradient(135deg, #fce7f3, #ede9fe)', borderRadius: 16, padding: '16px', marginBottom: '1.5rem', fontSize: '0.95rem', color: 'var(--text)' }}>
+                                        🤖 "Los algoritmos han terminado el análisis... <strong>¡Los resultados son extraordinarios!</strong>"
+                                    </div>
+                                    <button className="btn-primary" onClick={onNext}>
+                                        Ver Pregunta Final 💘
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: FINAL QUESTION
+        function ScreenFinalQuestion({ name, onConfirm }) {
+            const [accepted, setAccepted] = useState(false);
+            const [showConfirm, setShowConfirm] = useState(false);
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 520 }}>
+                        <div className="card" style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '4rem', marginBottom: '1rem', animation: 'pulse-heart 1.5s ease-in-out infinite' }}>💖</div>
+                            <h1 className="cursive" style={{ marginBottom: '1rem', fontSize: '2.2rem' }}>
+                                Entonces... ¿Saldrías conmigo?
+                            </h1>
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1rem' }}>
+                                {name ? `${name}, esto es lo más importante del protocolo 🥺` : 'Esto es lo más importante del protocolo 🥺'}
+                            </p>
+
+                            <label className="checkbox-wrap" onClick={() => setAccepted(!accepted)}>
+                                <input type="checkbox" checked={accepted} onChange={() => { }} />
+                                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#6d28d9' }}>
+                                    ☑️ Acepto los términos y condiciones de esta aventura.
+                                </span>
+                            </label>
+
+                            {accepted && !showConfirm && (
+                                <div style={{ animation: 'bounce-in 0.4s ease' }}>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem', background: 'var(--lavender-light)', padding: '10px 16px', borderRadius: 12 }}>
+                                        📜 Al confirmar acepta: sonrisas garantizadas, risas incluidas, malos ratos excluidos 💕
+                                    </div>
+                                    <button className="btn-primary" style={{ fontSize: '1.1rem', padding: '16px 48px', animation: 'glow 1.5s ease-in-out infinite' }}
+                                        onClick={() => { setShowConfirm(true); setTimeout(onConfirm, 300); }}>
+                                        💖 Confirmar Match
+                                    </button>
+                                </div>
+                            )}
+
+                            {!accepted && (
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+                                    Primero acepta los términos para continuar 👆
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // SCREEN: SUCCESS
+        function ScreenSuccess({ name, onRestart }) {
+            const [confetti, setConfetti] = useState([]);
+
+            useEffect(() => {
+                const pieces = Array.from({ length: 40 }).map((_, i) => ({
+                    id: i,
+                    x: Math.random() * 100,
+                    delay: Math.random() * 2,
+                }));
+                setConfetti(pieces);
+            }, []);
+
+            return (
+                <div className="screen">
+                    <FloatingHearts />
+                    {confetti.map(c => <ConfettiPiece key={c.id} x={c.x} delay={c.delay} />)}
+
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        <div className="final-card">
+                            <div style={{ fontSize: '4rem', marginBottom: '0.5rem', animation: 'wiggle 1s ease-in-out infinite' }}>🎉</div>
+                            <h1 className="cursive" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Match Confirmado</h1>
+
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#dcfce7', color: '#15803d', padding: '6px 20px', borderRadius: 50, fontSize: '0.85rem', fontWeight: 700, marginBottom: '1.5rem' }}>
+                                ✅ Status: Éxito
+                            </div>
+
+                            <div style={{ background: 'white', borderRadius: 16, padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 4px 20px rgba(255,107,138,0.1)' }}>
+                                <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: 'var(--text)', fontWeight: 600 }}>
+                                    "Nos vemos pronto, mi nerd favorita ❤️"
+                                </p>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                                <button
+                                    className="btn-primary"
+                                    style={{ fontSize: '0.9rem', padding: '12px 16px' }}
+                                    onClick={() => {
+                                        if (navigator.share) {
+                                            navigator.share({ title: '💘 Match Confirmado', text: '¡Tenemos una cita! 🎉' });
+                                        } else {
+                                            alert('📸 ¡Toma una captura de pantalla para compartir!');
+                                        }
+                                    }}
+                                >
+                                    📸 Compartir
+                                </button>
+                                <button className="btn-secondary" style={{ fontSize: '0.9rem', padding: '12px 16px' }} onClick={onRestart}>
+                                    🔄 Reiniciar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // ADMIN PANEL
+        function AdminPanel({ responses, onBack }) {
+            const [search, setSearch] = useState('');
+            const [sortBy, setSortBy] = useState('fechaRegistro');
+
+            const filtered = responses
+                .filter(r => r.nombre?.toLowerCase().includes(search.toLowerCase()))
+                .sort((a, b) => {
+                    if (sortBy === 'nombre') return (a.nombre || '').localeCompare(b.nombre || '');
+                    return new Date(b.fechaRegistro) - new Date(a.fechaRegistro);
+                });
+
+            const stats = {
+                total: responses.length,
+                comidaFav: mostCommon(responses.map(r => r.comida)),
+                planFav: mostCommon(responses.map(r => r.planCita)),
+                actividadFav: mostCommon(responses.map(r => r.actividadPosterior)),
+            };
+
+            function mostCommon(arr) {
+                const counts = {};
+                arr.forEach(v => v && (counts[v] = (counts[v] || 0) + 1));
+                return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+            }
+
+            function exportCSV() {
+                const headers = ['nombre', 'fecha', 'hora', 'generoPelicula', 'lugarPelicula', 'sugerencia', 'planCita', 'comida', 'actividadPosterior', 'fechaRegistro'];
+                const rows = responses.map(r => headers.map(h => `"${r[h] || ''}"`).join(','));
+                const csv = [headers.join(','), ...rows].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = 'date_protocol.csv'; a.click();
+            }
+
+            return (
+                <div style={{ minHeight: '100vh', background: '#f8f9fc', fontFamily: 'Quicksand, sans-serif' }}>
+                    {/* Header */}
+                    <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <button onClick={onBack} style={{ background: 'none', border: '1.5px solid #e5e7eb', borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, color: '#6b7280', fontSize: '0.9rem' }}>
+                                ← Volver
+                            </button>
+                            <h1 style={{ fontFamily: 'Dancing Script, cursive', fontSize: '1.8rem', color: 'var(--rose)' }}>💘 Panel Admin</h1>
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <button onClick={exportCSV} style={{ background: '#dcfce7', border: 'none', borderRadius: 8, padding: '8px 16px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, color: '#15803d', fontSize: '0.85rem' }}>
+                                📥 Exportar CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style={{ maxWidth: 1000, margin: '0 auto', padding: '2rem 1rem' }}>
+                        {/* Stats */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: '2rem' }}>
+                            {[
+                                { icon: '📊', label: 'Total respuestas', value: stats.total },
+                                { icon: '🍽️', label: 'Comida favorita', value: stats.comidaFav },
+                                { icon: '✨', label: 'Plan favorito', value: stats.planFav },
+                                { icon: '🌙', label: 'Actividad fav.', value: stats.actividadFav },
+                            ].map(s => (
+                                <div key={s.label} style={{ background: 'white', borderRadius: 16, padding: '1.25rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                                    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{s.icon}</div>
+                                    <div style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>{s.value}</div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>{s.label}</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Search & Sort */}
+                        <div style={{ display: 'flex', gap: 12, marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                            <input
+                                className="input-field"
+                                type="text"
+                                placeholder="🔍 Buscar por nombre..."
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                                style={{ flex: 1, minWidth: 200, margin: 0 }}
+                            />
+                            <select
+                                className="input-field"
+                                value={sortBy}
+                                onChange={e => setSortBy(e.target.value)}
+                                style={{ width: 'auto', margin: 0 }}
+                            >
+                                <option value="fechaRegistro">📅 Por fecha</option>
+                                <option value="nombre">👤 Por nombre</option>
+                            </select>
+                        </div>
+
+                        {/* Table */}
+                        {filtered.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: 16, color: 'var(--text-muted)' }}>
+                                <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📭</div>
+                                <p>No hay respuestas todavía.</p>
+                            </div>
+                        ) : (
+                            <div style={{ background: 'white', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                                {filtered.map((r, i) => (
+                                    <div key={i} style={{ padding: '1.25rem', borderBottom: '1px solid #f3f4f6', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 8, alignItems: 'center' }}>
+                                        <div>
+                                            <div style={{ fontWeight: 700, color: 'var(--text)' }}>{r.nombre}</div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{r.fecha} {r.hora}</div>
+                                        </div>
+                                        <div style={{ fontSize: '0.85rem' }}>🎬 {r.generoPelicula}</div>
+                                        <div style={{ fontSize: '0.85rem' }}>✨ {r.planCita}</div>
+                                        <div style={{ fontSize: '0.85rem' }}>🍽️ {r.comida}</div>
+                                        <div style={{ fontSize: '0.85rem' }}>🌙 {r.actividadPosterior}</div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                            {new Date(r.fechaRegistro).toLocaleDateString('es-ES')}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // MAIN APP
+        function App() {
+            const [screen, setScreen] = useState('intro');
+            const [formData, setFormData] = useState({});
+            const [responses, setResponses] = useState([]);
+
+            const merge = (newData) => setFormData(prev => ({ ...prev, ...newData }));
+
+            const saveResponse = async (finalData) => {
+                const record = {
+                    ...finalData,
+                    fechaRegistro: new Date().toISOString()
+                };
+
+                try {
+                    await window.firebaseHelpers.addDoc(
+                        window.firebaseHelpers.collection(
+                            window.db,
+                            "date_protocol_responses"
+                        ),
+                        record
+                    );
+
+                    console.log("Guardado correctamente");
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+
+            useEffect(() => {
+                loadResponses();
+            }, []);
+
+            async function loadResponses() {
+                try {
+                    const snapshot = await window.firebaseHelpers.getDocs(
+                        window.firebaseHelpers.collection(
+                            window.db,
+                            "date_protocol_responses"
+                        )
+                    );
+
+                    const data = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+
+                    setResponses(data);
+
+                    console.log("Respuestas cargadas:", data);
+                } catch (error) {
+                    console.error("Error cargando respuestas:", error);
+                }
+            }
+
+            
+        if (screen === 'admin') {
+            return (
+                <AdminPanel
+                    responses={responses}
+                    onBack={() => setScreen('intro')}
+                />
+            );
+        }
+
+        return (
+            <>
+                {screen === 'intro' && (
+                    <div style={{ position: 'relative' }}>
+                        <ScreenIntro onStart={() => setScreen('step1')} />
+                        <button
+                            onClick={() => {
+                                const password = prompt("🔐 Contraseña de administrador");
+
+                                if (password === "boris") {
+                                    setScreen("admin");
+                                } else {
+                                    alert("❌ Contraseña incorrecta");
+                                }
+                            }}
+
+
+
+                            style={{ position: 'fixed', bottom: '1rem', right: '1rem', background: 'rgba(255,255,255,0.8)', border: '1.5px solid var(--rose-light)', borderRadius: 12, padding: '8px 16px', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', zIndex: 99, backdropFilter: 'blur(8px)' }}>
+                            🔐 Admin
+                        </button>
+                    </div>
+                )}
+                {screen === 'step1' && <Step1 onNext={() => setScreen('step2')} />}
+                {screen === 'step2' && <Step2 onNext={(d) => { merge(d); setScreen('step3'); }} />}
+                {screen === 'step3' && <Step3 onNext={(d) => { merge(d); setScreen('step4'); }} />}
+                {screen === 'step4' && <Step4 onNext={(d) => { merge(d); setScreen('step5'); }} />}
+                {screen === 'step5' && <Step5 onNext={(d) => { merge(d); setScreen('step6'); }} />}
+                {screen === 'step6' && <Step6 onNext={(d) => { merge(d); setScreen('step7'); }} />}
+                {screen === 'step7' && <Step7 onNext={(d) => { const full = { ...formData, ...d }; merge(d); saveResponse(full); setScreen('summary'); }} />}
+                {screen === 'summary' && <ScreenSummary data={formData} onNext={() => setScreen('final')} />}
+                {screen === 'final' && <ScreenFinalQuestion name={formData.nombre} onConfirm={() => setScreen('success')} />}
+                {screen === 'success' && <ScreenSuccess name={formData.nombre} onRestart={() => { setFormData({}); setScreen('intro'); }} />}
+            </>
+        );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+
+</html>
